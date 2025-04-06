@@ -5,7 +5,7 @@ import SideBar from "./SideBarDoc";
 import Personal from "./PersonalDoc";
 import Booking from "./BookingDoc";
 
-const page = () => {
+const DoctorDachboard = () => {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") || "personalDoc";
   return (
@@ -18,4 +18,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default DoctorDachboard;
