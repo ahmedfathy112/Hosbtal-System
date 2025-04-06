@@ -11,9 +11,8 @@ const PaitentDash = () => {
   return (
     <main className="w-full flex flex-row">
       <SideBar />
-
-      {tab === "booking" && <Booking />}
-      {tab === "personal" && <Personal />}
+      {tab === "booking" ? <Booking /> : <Personal />}
+      {/* {tab === "personal" && <Personal />} */}
     </main>
   );
 };
