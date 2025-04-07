@@ -84,7 +84,7 @@ const Booking = () => {
 
   return (
     <article
-      className={`w-full flex flex-col px-8 py-5 max-md:px-3.5 bg-gray-50 dark:bg-gray-900 min-h-screen ${
+      className={`w-5/6 flex flex-col px-8 py-5 max-md:px-3.5 bg-gray-50 dark:bg-gray-900 min-h-screen ${
         isPrintMode ? "print-layout" : ""
       }`}
     >
