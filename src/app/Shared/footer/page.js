@@ -90,6 +90,15 @@ const Footer = () => {
                   لوحة الطبيب
                 </Link>
               </li>
+              {/* المخزن */}
+              <li>
+                <Link
+                  href="/Subliments"
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  المخزن
+                </Link>
+              </li>
             </ul>
           </div>
 
