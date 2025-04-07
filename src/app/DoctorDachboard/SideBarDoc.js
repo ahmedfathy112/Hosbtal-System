@@ -62,7 +62,7 @@ const SideBar = () => {
         </h4>
       </Link>
       {/* Doctor Details Link */}
-      <div className="w-full flex flex-row text-left my-3">
+      <Link href="/SalaryPage" className="w-full flex flex-row text-left my-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -81,7 +81,7 @@ const SideBar = () => {
         <h4 className="text-[18px] font-medium mx-2 cursor-pointer transition-all hover:text-[#284CFF] max-md:hidden">
           الراتب
         </h4>
-      </div>
+      </Link>
 
       {/* SignOut Button */}
       <button className="absolute bottom-3 flex flex-row text-left my-3 text-[18px] bg-red-600 font-medium mx-2 py-2 px-3 rounded-2xl outline-0 border-0 cursor-pointer max-md:bottom-1/3 max-md:px-1 max-md:left-0">

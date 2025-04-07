@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // الصحيح
 import React from "react";
+import { FaRegMoneyBillAlt, FaUserNurse } from "react-icons/fa";
 
 const SideBar = () => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const SideBar = () => {
   };
   return (
     <aside className="relative w-1/5 flex flex-col text-center p-4 bg-[#284cff0d] rounded-2xl min-h-[80dvh] max-md:h-dvh max-md:px-2 max-md:w-1/6">
-      {/* Profile Link */}
+      {/* Doctors List */}
       <Link
         href="/ManagerDashoard/?tab=doctors"
         onClick={() => handleClick("personal")}
@@ -61,26 +62,13 @@ const SideBar = () => {
           الحجوزات
         </h4>
       </Link>
-      {/* Profile Link */}
+      {/* Nursing List */}
       <Link
         href="/ManagerDashoard/?tab=nursing"
         onClick={() => handleClick("personal")}
         className="w-full flex flex-row text-center my-3"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6 my-auto"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-          />
-        </svg>
+        <FaUserNurse className="text-2xl my-auto" />
 
         <h4 className="text-[18px] font-medium mx-2 cursor-pointer transition-all hover:text-[#284CFF] max-md:hidden">
           طاقم التمريض
@@ -103,7 +91,7 @@ const SideBar = () => {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+            d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
           />
         </svg>
 
@@ -128,12 +116,24 @@ const SideBar = () => {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+            d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
           />
         </svg>
 
         <h4 className="text-[18px] font-medium mx-2 cursor-pointer transition-all hover:text-[#284CFF] max-md:hidden">
           إضافة ممرض
+        </h4>
+      </Link>
+      {/* salarys Link */}
+      <Link
+        href="/ManagerDashoard/?tab=salarys"
+        onClick={() => handleClick("personal")}
+        className="w-full flex flex-row text-center my-3"
+      >
+        <FaRegMoneyBillAlt className="my-auto text-2xl" />
+
+        <h4 className="text-[18px] font-medium mx-2 cursor-pointer transition-all hover:text-[#284CFF] max-md:hidden">
+          المرتبات
         </h4>
       </Link>
 

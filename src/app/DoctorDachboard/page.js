@@ -12,8 +12,6 @@ const DoctorDachboard = () => {
     <main className="w-full flex flex-row">
       <SideBar />
       {tab === "bookingDoc" ? <Booking /> : <Personal />}
-
-      {/* <Personal /> */}
     </main>
   );
 };

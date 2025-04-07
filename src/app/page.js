@@ -4,7 +4,7 @@ import NavBar from "./Shared/navBar/page";
 export default function Home() {
   return (
     <div className="">
-      <NavBar />
+      {/* <NavBar /> */}
       <HomePage />
     </div>
   );

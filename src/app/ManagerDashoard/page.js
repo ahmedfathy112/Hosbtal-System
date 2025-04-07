@@ -7,6 +7,7 @@ import DoctorsMang from "./DoctorsMang";
 import NursingMang from "./NursingMang";
 import DoctorForm from "./AddDoctors";
 import NurseForm from "./AddNurse";
+import SalaryPage from "./SalarysPage";
 
 const PaitentDash = () => {
   const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ const PaitentDash = () => {
       {tab === "doctors" ? <DoctorsMang /> : null}
       {tab === "add doctor" ? <DoctorForm /> : null}
       {tab === "add nurse" ? <NurseForm /> : null}
+      {tab === "salarys" ? <SalaryPage /> : null}
       {/* {tab === "personal" && <Personal />} */}
     </main>
   );

@@ -3,6 +3,7 @@ import LoadingComponent from "@/app/ReusableComponet/Loading";
 import "./globals.css";
 import { Suspense } from "react";
 import NavBar from "./Shared/navBar/page";
+import Footer from "./Shared/footer/page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
         <Suspense fallback={<LoadingComponent />}>
           <NavBar />
           {children}
+          <Footer />
         </Suspense>
       </body>
     </html>
