@@ -77,6 +77,15 @@ const Footer = () => {
                   لوحة تحكم المريض
                 </Link>
               </li>
+              {/* Appointment page */}
+              <li>
+                <Link
+                  href="/BookingPage"
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  حجز الكشوفات
+                </Link>
+              </li>
               {/* الاداري */}
               <li>
                 <Link

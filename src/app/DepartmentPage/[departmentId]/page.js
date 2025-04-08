@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/app/ReusableComponet/Loading";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -225,7 +226,9 @@ const DepartmentDetails = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-pulse text-xl">جاري تحميل البيانات...</div>
+        <div className="animate-pulse text-xl">
+          <Loading />
+        </div>
       </div>
     );
   }
