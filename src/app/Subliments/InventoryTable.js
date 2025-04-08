@@ -6,7 +6,8 @@ export default function InventoryTable({ items, searchTerm, onSearchChange }) {
     <>
       {/* here you can searh and find tools */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold mb-4 md:mb-0">مخزن المستشفى</h1>
+        <h1 className="text-2xl font-bold mb-4 md:mb-0">الصيدلية</h1>
+        {/* search here */}
         <div className="relative w-full md:w-64">
           <FiSearch className="absolute left-3 top-3 text-gray-400" />
           <input
@@ -27,7 +28,6 @@ export default function InventoryTable({ items, searchTerm, onSearchChange }) {
               <tr className="bg-gray-700">
                 <th className="py-3 px-4 text-right">الاسم</th>
                 <th className="py-3 px-4 text-right">التاريخ</th>
-                <th className="py-3 px-4 text-right">التفاصيل</th>
                 <th className="py-3 px-4 text-right">الكمية</th>
                 <th className="py-3 px-4 text-right">إجراءات</th>
               </tr>
@@ -41,14 +41,13 @@ export default function InventoryTable({ items, searchTerm, onSearchChange }) {
                   >
                     <td className="py-3 px-4">{item.name}</td>
                     <td className="py-3 px-4">{item.date}</td>
-                    <td className="py-3 px-4">{item.details}</td>
                     <td className="py-3 px-4">{item.quantity}</td>
                     <td className="py-3 px-4">
                       <div className="flex justify-end space-x-2">
-                        <button className="p-1 text-blue-400 hover:text-blue-300">
+                        <button className="p-1 text-blue-400 hover:text-blue-300 cursor-pointer">
                           <FiEdit />
                         </button>
-                        <button className="p-1 text-red-400 hover:text-red-300">
+                        <button className="p-1 text-red-400 hover:text-red-300 cursor-pointer">
                           <FiTrash2 />
                         </button>
                       </div>
@@ -68,7 +67,7 @@ export default function InventoryTable({ items, searchTerm, onSearchChange }) {
       </div>
 
       {/* button to add tool or medicine */}
-      <button className="mt-6 flex items-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
+      <button className="mt-6 flex items-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg cursor-pointer">
         <FiPlus className="ml-2" />
         إضافة عنصر جديد
       </button>

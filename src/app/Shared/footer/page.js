@@ -14,6 +14,11 @@ import {
 import { MdEmail } from "react-icons/md";
 
 const Footer = () => {
+  const departments = [
+    {
+      id: "cardiology",
+    },
+  ];
   return (
     <footer className="bg-gradient-to-r from-[#0a0a0aa4] to-[#2b2b2b59] text-white pt-12 pb-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -108,53 +113,68 @@ const Footer = () => {
               الأقسام الطبية
             </h4>
             <ul className="space-y-2">
+              {/* emerngacy */}
               <li>
-                <a
-                  href="#"
+                <Link
+                  href={`/DepartmentPage/emergency`}
                   className="text-gray-300 hover:text-white transition"
                 >
                   قسم الطوارئ
-                </a>
+                </Link>
               </li>
+              {/* cardiology */}
               <li>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  قسم الجراحة
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  قسم الأطفال
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
+                <Link
+                  href={`/DepartmentPage/cardiology`}
                   className="text-gray-300 hover:text-white transition"
                 >
                   قسم القلب
-                </a>
+                </Link>
               </li>
+              {/* Dentist */}
               <li>
-                <a
-                  href="#"
+                <Link
+                  href={`/DepartmentPage/dentistry`}
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  قسم الأسنان
+                </Link>
+              </li>
+              {/* surgury */}
+              <li>
+                <Link
+                  href={`/DepartmentPage/surgery`}
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  قسم الجراحة
+                </Link>
+              </li>
+              {/* childrens */}
+              <li>
+                <Link
+                  href={`/DepartmentPage/pediatrics`}
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  قسم الأطفال
+                </Link>
+              </li>
+              {/* Eyes */}
+              <li>
+                <Link
+                  href={`/DepartmentPage/ophthalmology`}
                   className="text-gray-300 hover:text-white transition"
                 >
                   قسم العيون
-                </a>
+                </Link>
               </li>
+              {/* Women */}
               <li>
-                <a
-                  href="#"
+                <Link
+                  href={`/DepartmentPage/gynecology`}
                   className="text-gray-300 hover:text-white transition"
                 >
                   قسم النساء والتوليد
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
