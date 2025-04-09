@@ -104,13 +104,22 @@ const Footer = () => {
                   لوحة الطبيب
                 </Link>
               </li>
-              {/* المخزن */}
+              {/* الصيدلية */}
               <li>
                 <Link
                   href="/Subliments"
                   className="text-gray-300 hover:text-white transition"
                 >
-                  المخزن
+                  الصيدلية
+                </Link>
+              </li>
+              {/* تأكيد الكشوفات */}
+              <li>
+                <Link
+                  href="/AppointmentsConfirm"
+                  className="text-gray-300 hover:text-white transition"
+                >
+                  تأكيد الكشوفات
                 </Link>
               </li>
             </ul>
