@@ -363,7 +363,7 @@ const DepartmentDetails = () => {
         </section>
 
         {/* Doctors Details Section */}
-        <section className="mb-16">
+        {/* <section className="mb-16">
           <h2 className="text-3xl font-bold mb-8 dark:text-white">
             فريق الأطباء
           </h2>
@@ -418,7 +418,7 @@ const DepartmentDetails = () => {
               </p>
             </div>
           )}
-        </section>
+        </section> */}
 
         {/* FAQ Section */}
         <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-16">

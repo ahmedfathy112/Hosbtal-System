@@ -1,7 +1,6 @@
-import Link from "next/link";
 import React from "react";
 
-export const HomeCard = ({ iconPath, tittle, paragraph, button, BtnLink }) => {
+export const HomeCard = ({ iconPath, tittle, paragraph }) => {
   return (
     <div className="flex flex-col rounded-xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mx-3 my-2 p-6 w-full md:w-[22%] min-w-[250px] border border-gray-100 dark:border-gray-700">
       <div className="w-full text-left mb-4">
@@ -24,12 +23,6 @@ export const HomeCard = ({ iconPath, tittle, paragraph, button, BtnLink }) => {
       <p className="mb-5 text-gray-600 dark:text-gray-300 text-[15px] leading-relaxed">
         {paragraph}
       </p>
-      <Link
-        href={`${BtnLink}`}
-        className="mt-auto w-fit py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
-      >
-        {button}
-      </Link>
     </div>
   );
 };

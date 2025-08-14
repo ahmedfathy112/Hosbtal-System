@@ -1,9 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import LoadingComponent from "@/app/ReusableComponet/Loading";
+import GlobalLoader from "@/app/ReusableComponet/Loading";
 import "./globals.css";
 import { Suspense } from "react";
 import NavBar from "./Shared/navBar/page";
 import Footer from "./Shared/footer/page";
+import { AuthProvider } from "../app/AuthService";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +28,14 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Suspense fallback={<LoadingComponent />}>
-          <NavBar />
-          {children}
-          <Footer />
-        </Suspense>
+        <AuthProvider>
+          <Suspense>
+            <NavBar />
+            <GlobalLoader />
+            {children}
+            <Footer />
+          </Suspense>
+        </AuthProvider>
       </body>
     </html>
   );

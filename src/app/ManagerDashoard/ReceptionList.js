@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { fetchNurses, deleteUser, addSalary } from "@/app/ApiRequsets";
+import { fetchReceptionists, deleteUser, addSalary } from "@/app/ApiRequsets";
 
-const NursingMang = () => {
-  const [nurses, setNurses] = useState([]);
+const ReceptionManagement = () => {
+  const [receptionists, setReceptionists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [salaryData, setSalaryData] = useState({
@@ -16,38 +16,38 @@ const NursingMang = () => {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
 
   useEffect(() => {
-    const loadNurses = async () => {
+    const loadReceptionists = async () => {
       try {
-        const data = await fetchNurses();
-        setNurses(data);
+        const data = await fetchReceptionists();
+        setReceptionists(data);
       } catch (err) {
         setError(err.message);
-        console.error("Failed to fetch nurses:", err);
+        console.error("Failed to fetch receptionists:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadNurses();
+    loadReceptionists();
   }, []);
 
-  const handleDeleteNurse = async (nurseId) => {
-    if (window.confirm("هل أنت متأكد من حذف هذا الممرض؟")) {
+  const handleDeleteReceptionist = async (receptionistId) => {
+    if (window.confirm("هل أنت متأكد من حذف موظف الاستقبال هذا؟")) {
       try {
-        await deleteUser(nurseId);
-        setNurses(nurses.filter((nurse) => nurse.id !== nurseId));
-        alert("تم حذف الممرض بنجاح");
+        await deleteUser(receptionistId);
+        setReceptionists(receptionists.filter((r) => r.id !== receptionistId));
+        alert("تم حذف موظف الاستقبال بنجاح");
       } catch (err) {
-        console.error("Failed to delete nurse:", err);
-        alert("فشل في حذف الممرض");
+        console.error("Failed to delete receptionist:", err);
+        alert("فشل في حذف موظف الاستقبال");
       }
     }
   };
 
-  const openSalaryModal = (nurseId) => {
+  const openSalaryModal = (receptionistId) => {
     setSalaryData({
       ...salaryData,
-      appUserId: nurseId,
+      appUserId: receptionistId,
       paymentDate: new Date().toISOString().split("T")[0],
     });
     setShowSalaryModal(true);
@@ -79,7 +79,9 @@ const NursingMang = () => {
   if (loading) {
     return (
       <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
-        <div className="text-center py-10">جاري تحميل بيانات الممرضين...</div>
+        <div className="text-center py-10">
+          جاري تحميل بيانات موظفي الاستقبال...
+        </div>
       </article>
     );
   }
@@ -97,7 +99,7 @@ const NursingMang = () => {
   return (
     <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
       <h2 className="font-semibold text-2xl text-left mb-4">
-        معلومات طاقم التمريض
+        معلومات موظفي الاستقبال
       </h2>
 
       <div className="w-full flex flex-col justify-start rounded-2xl bg-[#284cff1d] py-7 px-5">
@@ -116,14 +118,14 @@ const NursingMang = () => {
           />
         </svg>
 
-        <h3 className="font-medium text-xl my-2.5">طاقم التمريض</h3>
+        <h3 className="font-medium text-xl my-2.5">موظفو الاستقبال</h3>
         <span className="font-medium text-sm text-gray-400 my-3">
-          معلومات عن طاقم التمريض في المستشفي
+          معلومات عن موظفي الاستقبال في المستشفى
         </span>
       </div>
 
       <div className="w-full overflow-x-auto my-10">
-        {nurses.length > 0 ? (
+        {receptionists.length > 0 ? (
           <table className="w-full border-collapse border border-gray-600 text-white text-right">
             <thead>
               <tr className="bg-gray-800">
@@ -132,39 +134,55 @@ const NursingMang = () => {
                 <th className="p-3 border border-gray-600">
                   البريد الإلكتروني
                 </th>
-                <th className="p-3 border border-gray-600">القسم الطبي</th>
+                <th className="p-3 border border-gray-600">مستوى الطوارئ</th>
+                <th className="p-3 border border-gray-600">الحالة</th>
                 <th className="p-3 border border-gray-600">رقم الهاتف</th>
+                <th className="p-3 border border-gray-600">وقت الدخول</th>
                 <th className="p-3 border border-gray-600">الإجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {nurses.map((nurse) => (
+              {receptionists.map((receptionist) => (
                 <tr
-                  key={nurse.id}
+                  key={receptionist.id}
                   className="border border-gray-600 hover:bg-gray-700"
                 >
                   <td className="p-3 border border-gray-600">
-                    {nurse.fullname}
+                    {receptionist.fullname}
                   </td>
                   <td className="p-3 border border-gray-600">
-                    {nurse.userName}
-                  </td>
-                  <td className="p-3 border border-gray-600">{nurse.email}</td>
-                  <td className="p-3 border border-gray-600">
-                    {nurse.medicaldepartment || "غير محدد"}
+                    {receptionist.userName}
                   </td>
                   <td className="p-3 border border-gray-600">
-                    {nurse.phoneNumber}
+                    {receptionist.email}
+                  </td>
+                  <td className="p-3 border border-gray-600">
+                    {receptionist.emergencylevel === "begin" && "مبتدئ"}
+                    {receptionist.emergencylevel === "intermediate" && "متوسط"}
+                    {receptionist.emergencylevel === "expert" && "خبير"}
+                  </td>
+                  <td className="p-3 border border-gray-600">
+                    {receptionist.status ? (
+                      <span className="text-green-500">نشط</span>
+                    ) : (
+                      <span className="text-red-500">غير نشط</span>
+                    )}
+                  </td>
+                  <td className="p-3 border border-gray-600">
+                    {receptionist.phoneNumber}
+                  </td>
+                  <td className="p-3 border border-gray-600">
+                    {new Date(receptionist.checkintime).toLocaleString("ar-EG")}
                   </td>
                   <td className="p-3 border border-gray-600 flex gap-2 justify-center">
                     <button
-                      onClick={() => handleDeleteNurse(nurse.id)}
+                      onClick={() => handleDeleteReceptionist(receptionist.id)}
                       className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
                     >
                       حذف
                     </button>
                     <button
-                      onClick={() => openSalaryModal(nurse.id)}
+                      onClick={() => openSalaryModal(receptionist.id)}
                       className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded"
                     >
                       إضافة راتب
@@ -175,7 +193,9 @@ const NursingMang = () => {
             </tbody>
           </table>
         ) : (
-          <div className="text-center py-10">لا يوجد ممرضين مسجلين حالياً</div>
+          <div className="text-center py-10">
+            لا يوجد موظفي استقبال مسجلين حالياً
+          </div>
         )}
       </div>
 
@@ -183,7 +203,9 @@ const NursingMang = () => {
       {showSalaryModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 p-6 rounded-lg w-96">
-            <h3 className="text-xl font-semibold mb-4">إضافة راتب للممرض</h3>
+            <h3 className="text-xl font-semibold mb-4">
+              إضافة راتب لموظف الاستقبال
+            </h3>
 
             <div className="mb-4">
               <label className="block mb-2">المبلغ:</label>
@@ -249,4 +271,4 @@ const NursingMang = () => {
   );
 };
 
-export default NursingMang;
+export default ReceptionManagement;

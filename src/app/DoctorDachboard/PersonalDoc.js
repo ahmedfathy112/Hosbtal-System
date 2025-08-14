@@ -1,11 +1,76 @@
-import React from "react";
+"use client";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useUserId } from "../AuthService";
 
 const Personal = () => {
+  const [doctorInfo, setDoctorInfo] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const userId = useUserId();
+
+  useEffect(() => {
+    const fetchDoctorInfo = async () => {
+      if (!userId) return;
+
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `https://hospital111.runasp.net/api/Appuser/${userId}`
+        );
+        setDoctorInfo(response.data);
+        setError("");
+      } catch (err) {
+        setError(err.message || "حدث خطأ أثناء جلب البيانات");
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorInfo();
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
+        <div className="text-center py-10">جاري تحميل بيانات الطبيب...</div>
+      </article>
+    );
+  }
+
+  if (error) {
+    return (
+      <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
+        <div className="text-red-500 text-center py-10">
+          حدث خطأ أثناء جلب البيانات: {error}
+        </div>
+      </article>
+    );
+  }
+
+  if (!doctorInfo) {
+    return (
+      <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
+        <div className="text-center py-10">لا توجد بيانات متاحة للطبيب</div>
+      </article>
+    );
+  }
+
   return (
     <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
       <h2 className="font-semibold text-2xl text-left mb-4">معلومات الطبيب</h2>
-      {/* card for personal hedding */}
+
+      {/* card for personal heading */}
       <div className="w-full flex flex-col justify-start rounded-2xl bg-[#284cff1d] py-7 px-5">
+        {doctorInfo.doctorImage && (
+          <img
+            src={`data:image/jpeg;base64,${doctorInfo.doctorImage}`}
+            alt="صورة الطبيب"
+            className="w-24 h-24 rounded-full object-cover mb-4"
+          />
+        )}
+
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -26,7 +91,8 @@ const Personal = () => {
           معلومات الطبيب الأساسية
         </span>
       </div>
-      {/* section of personal hedding */}
+
+      {/* section of personal heading */}
       <section className="w-full flex flex-row flex-wrap justify-between rounded-2xl bg-[#284cff1d] py-7 px-5 my-8">
         {/* the Name */}
         <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
@@ -48,10 +114,11 @@ const Personal = () => {
           <div className="flex flex-col">
             <h4 className="font-medium text-lg my-2">الأسم</h4>
             <span className="font-medium text-sm mt-1 text-gray-400">
-              أحمد فتحي أحمد
+              {doctorInfo.fullname || "غير متوفر"}
             </span>
           </div>
         </div>
+
         {/* the department */}
         <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
           <svg
@@ -72,10 +139,11 @@ const Personal = () => {
           <div className="flex flex-col">
             <h4 className="font-medium text-lg my-2">التخصص</h4>
             <span className="font-medium text-sm mt-1 text-gray-400">
-              طب وجراحه العيون
+              {doctorInfo.specialty || "غير متوفر"}
             </span>
           </div>
         </div>
+
         {/* the Phone */}
         <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
           <svg
@@ -96,10 +164,11 @@ const Personal = () => {
           <div className="flex flex-col">
             <h4 className="font-medium text-lg my-2">رقم الهاتف</h4>
             <span className="font-medium text-sm mt-1 text-gray-400">
-              01060733679
+              {doctorInfo.phoneNumber || "غير متوفر"}
             </span>
           </div>
         </div>
+
         {/* the Email */}
         <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
           <svg
@@ -120,39 +189,63 @@ const Personal = () => {
           <div className="flex flex-col">
             <h4 className="font-medium text-lg my-2">البريد الإلكتروني</h4>
             <span className="font-medium text-sm mt-1 text-gray-400">
-              ahmedfathy241110@gmail.com
+              {doctorInfo.email || "غير متوفر"}
             </span>
           </div>
         </div>
-        {/* the Address */}
-        <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-10 my-auto mr-3 max-md:size-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-            />
-          </svg>
 
-          <div className="flex flex-col">
-            <h4 className="font-medium text-lg my-2">العنوان</h4>
-            <span className="font-medium text-sm mt-1 text-gray-400">
-              دمرو-المحله الكبري
-            </span>
+        {/* Additional Doctor Info */}
+        {doctorInfo.consultationFee && (
+          <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-10 my-auto mr-3 max-md:size-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <div className="flex flex-col">
+              <h4 className="font-medium text-lg my-2">رسوم الاستشارة</h4>
+              <span className="font-medium text-sm mt-1 text-gray-400">
+                {doctorInfo.consultationFee}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {doctorInfo.clinicSchedule && (
+          <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-10 my-auto mr-3 max-md:size-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+              />
+            </svg>
+
+            <div className="flex flex-col">
+              <h4 className="font-medium text-lg my-2">مواعيد العيادة</h4>
+              <span className="font-medium text-sm mt-1 text-gray-400">
+                {doctorInfo.clinicSchedule}
+              </span>
+            </div>
+          </div>
+        )}
       </section>
     </article>
   );

@@ -18,14 +18,14 @@ const Personal = () => {
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
-          throw new Error("لم يتم العثور على توكن المصادقة");
+          throw new Error("من فضلك سجل مره اخري");
         }
 
         const payload = JSON.parse(atob(token.split(".")[1]));
         const userId = payload.userId;
 
         if (!userId) {
-          throw new Error("لم يتم العثور على معرف المستخدم في التوكن");
+          throw new Error("توجد مشكله حاول مره إعاده التسجيل");
         }
 
         const userResponse = await fetchUserById(userId);
@@ -68,7 +68,7 @@ const Personal = () => {
 
   return (
     <article className="w-4/5 flex flex-col px-8 py-5 max-md:px-3.5">
-      <h2 className="font-semibold text-2xl text-left mb-4">معلومات المريض</h2>
+      <h2 className="font-semibold text-2xl text-left mb-4">معلومات الموظف</h2>
       {/* card for personal hedding */}
       <div className="w-full flex flex-col justify-start rounded-2xl bg-[#284cff1d] py-7 px-5">
         <svg
@@ -88,7 +88,7 @@ const Personal = () => {
 
         <h3 className="font-medium text-xl my-2.5">المعلومات الشخصيه</h3>
         <span className="font-medium text-sm text-gray-400 my-3">
-          معلومات المريض الأساسية
+          معلومات الموظف الأساسية
         </span>
       </div>
       {/* section of personal hedding */}
@@ -114,30 +114,6 @@ const Personal = () => {
             <h4 className="font-medium text-lg my-2">الأسم</h4>
             <span className="font-medium text-sm mt-1 text-gray-400">
               {userData.fullname || "غير متوفر"}
-            </span>
-          </div>
-        </div>
-        {/* the age */}
-        <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-10 my-auto mr-3 max-md:size-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.379a48.474 48.474 0 0 0-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z"
-            />
-          </svg>
-
-          <div className="flex flex-col">
-            <h4 className="font-medium text-lg my-2">العمر</h4>
-            <span className="font-medium text-sm mt-1 text-gray-400">
-              {userData.age ? `${userData.age} سنه` : "غير متوفر"}
             </span>
           </div>
         </div>
@@ -215,54 +191,6 @@ const Personal = () => {
             <h4 className="font-medium text-lg my-2">النوع</h4>
             <span className="font-medium text-sm mt-1 text-gray-400">
               {userData.gender === "female" ? "أنثى" : "ذكر"}
-            </span>
-          </div>
-        </div>
-        {/* the Blood Type */}
-        <div className="w-1/2 flex flex-row text-left mt-4 max-md:w-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-10 my-auto mr-3 max-md:size-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
-            />
-          </svg>
-
-          <div className="flex flex-col">
-            <h4 className="font-medium text-lg my-2">فصيلة الدم</h4>
-            <span className="font-medium text-sm mt-1 text-gray-400">
-              {userData.bloodType || "غير متوفر"}
-            </span>
-          </div>
-        </div>
-        {/* the Medical History */}
-        <div className="w-full flex flex-row text-left mt-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-10 my-auto mr-3 max-md:size-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
-            />
-          </svg>
-
-          <div className="flex flex-col">
-            <h4 className="font-medium text-lg my-2">التاريخ المرضي</h4>
-            <span className="font-medium text-sm mt-1 text-gray-400">
-              {userData.medicalHistory || "غير متوفر"}
             </span>
           </div>
         </div>

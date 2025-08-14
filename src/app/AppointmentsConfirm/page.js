@@ -1,75 +1,140 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import {
+  fetchAppointments,
+  fetchUserById,
+  fetchClinicById,
+  updateAppointmentStatus,
+  deleteAppointment,
+} from "@/app/ApiRequsets";
+import dayjs from "dayjs";
+import { useAuth } from "../AuthService";
+import { useRouter } from "next/navigation";
 
-// Fack Data
-const initialAppointments = [
-  {
-    id: "1",
-    patientName: "محمد أحمد",
-    clinicName: "عيادة 1",
-    doctorName: "د.أحمد",
-    date: "2025-04-10",
-    status: "غير مؤكد",
-  },
-  {
-    id: "2",
-    patientName: "سارة خالد",
-    clinicName: "عيادة 2",
-    doctorName: "د.مازن",
-    date: "2025-04-11",
-    status: "غير مؤكد",
-  },
-  {
-    id: "3",
-    patientName: "علي حسن",
-    clinicName: "عيادة 1",
-    doctorName: "د.إبراهيم",
-    date: "2025-04-12",
-    status: "مؤكد",
-  },
-];
+// Reception page for managing appointments - allows confirming, canceling and deleting appointments
+// Displays all appointments with patient, doctor, clinic details and status
 
 export default function Reception() {
-  const [appointments, setAppointments] = useState(initialAppointments);
+  const router = useRouter();
+  const { isAllowed } = useAuth();
+  if (!isAllowed(["Reception"])) {
+    router.push("/");
+  }
+  const [appointments, setAppointments] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClinic, setSelectedClinic] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [patientDetails, setPatientDetails] = useState({});
+  const [doctorDetails, setDoctorDetails] = useState({});
+  const [clinicDetails, setClinicDetails] = useState({});
 
-  // Filter Method
+  // جلب جميع الحجوزات
+  useEffect(() => {
+    const loadAppointments = async () => {
+      try {
+        const data = await fetchAppointments();
+        setAppointments(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    loadAppointments();
+  }, []);
+
+  // جلب تفاصيل المرضى والأطباء والعيادات
+  useEffect(() => {
+    const loadDetails = async () => {
+      const uniquePatientIds = [
+        ...new Set(appointments.map((a) => a.patientId)),
+      ];
+      const uniqueDoctorIds = [...new Set(appointments.map((a) => a.doctorId))];
+      const uniqueClinicIds = [...new Set(appointments.map((a) => a.clinicId))];
+
+      try {
+        // جلب بيانات المرضى
+        const patients = await Promise.all(
+          uniquePatientIds.map((id) => fetchUserById(id))
+        );
+        const patientsMap = patients.reduce((acc, patient) => {
+          acc[patient.id] = patient;
+          return acc;
+        }, {});
+
+        // جلب بيانات الأطباء
+        const doctors = await Promise.all(
+          uniqueDoctorIds.map((id) => fetchUserById(id))
+        );
+        const doctorsMap = doctors.reduce((acc, doctor) => {
+          acc[doctor.id] = doctor;
+          return acc;
+        }, {});
+
+        // جلب بيانات العيادات
+        const clinics = await Promise.all(
+          uniqueClinicIds.map((id) => fetchClinicById(id))
+        );
+        const clinicsMap = clinics.reduce((acc, clinic) => {
+          acc[clinic.id] = clinic;
+          return acc;
+        }, {});
+
+        setPatientDetails(patientsMap);
+        setDoctorDetails(doctorsMap);
+        setClinicDetails(clinicsMap);
+      } catch (err) {
+        console.error("Failed to fetch details:", err);
+      }
+    };
+
+    if (appointments.length > 0) {
+      loadDetails();
+    }
+  }, [appointments]);
+
+  // فلترة المواعيد
   const filteredAppointments = appointments.filter((appointment) => {
+    const patient = patientDetails[appointment.patientId] || {};
     const matchesSearch =
-      appointment.id.includes(searchQuery) ||
-      appointment.patientName.includes(searchQuery);
+      appointment.appointmentId.toString().includes(searchQuery) ||
+      patient.fullname?.includes(searchQuery);
     const matchesClinic =
-      selectedClinic === "" || appointment.clinicName === selectedClinic;
+      selectedClinic === "" ||
+      clinicDetails[appointment.clinicId]?.name === selectedClinic;
     return matchesSearch && matchesClinic;
   });
 
-  // Confirm Method
-  const confirmAppointment = (id) => {
-    Swal.fire({
-      title: "تأكيد الكشف",
-      text: "هل أنت متأكد من تأكيد هذا الكشف؟",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "نعم، تأكيد",
-      cancelButtonText: "إلغاء",
-      customClass: {
-        popup: "bg-gray-800 text-gray-200",
-        confirmButton: "bg-indigo-600 text-white px-4 py-2 rounded-lg mr-2",
-        cancelButton: "bg-gray-600 text-white px-4 py-2 rounded-lg",
-      },
-      buttonsStyling: false,
-    }).then((result) => {
+  // تأكيد الحجز
+  const confirmAppointment = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "تأكيد الكشف",
+        text: "هل أنت متأكد من تأكيد هذا الكشف؟",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "نعم، تأكيد",
+        cancelButtonText: "إلغاء",
+        customClass: {
+          popup: "bg-gray-800 text-gray-200",
+          confirmButton: "bg-indigo-600 text-white px-4 py-2 rounded-lg mr-2",
+          cancelButton: "bg-gray-600 text-white px-4 py-2 rounded-lg",
+        },
+        buttonsStyling: false,
+      });
+
       if (result.isConfirmed) {
+        await updateAppointmentStatus(id, true);
+
         setAppointments((prev) =>
-          prev.map((appointment) =>
-            appointment.id === id
-              ? { ...appointment, status: "مؤكد" }
-              : appointment
+          prev.map((app) =>
+            app.appointmentId === id ? { ...app, status: true } : app
           )
         );
+
         Swal.fire({
           title: "تم التأكيد",
           text: "تم تأكيد الكشف بنجاح!",
@@ -81,33 +146,47 @@ export default function Reception() {
           buttonsStyling: false,
         });
       }
-    });
+    } catch (err) {
+      Swal.fire({
+        title: "خطأ",
+        text: "فشل في تأكيد الحجز",
+        icon: "error",
+        customClass: {
+          popup: "bg-gray-800 text-gray-200",
+          confirmButton: "bg-indigo-600 text-white px-4 py-2 rounded-lg",
+        },
+        buttonsStyling: false,
+      });
+    }
   };
 
-  // CANCLE The Confirm
-  const cancelConfirmation = (id) => {
-    Swal.fire({
-      title: "إلغاء التأكيد",
-      text: "هل أنت متأكد من إلغاء تأكيد هذا الكشف؟",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "نعم، إلغاء",
-      cancelButtonText: "تراجع",
-      customClass: {
-        popup: "bg-gray-800 text-gray-200",
-        confirmButton: "bg-red-600 text-white px-4 py-2 rounded-lg mr-2",
-        cancelButton: "bg-gray-600 text-white px-4 py-2 rounded-lg",
-      },
-      buttonsStyling: false,
-    }).then((result) => {
+  // إلغاء تأكيد الحجز
+  const cancelConfirmation = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "إلغاء التأكيد",
+        text: "هل أنت متأكد من إلغاء تأكيد هذا الكشف؟",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "نعم، إلغاء",
+        cancelButtonText: "تراجع",
+        customClass: {
+          popup: "bg-gray-800 text-gray-200",
+          confirmButton: "bg-red-600 text-white px-4 py-2 rounded-lg mr-2",
+          cancelButton: "bg-gray-600 text-white px-4 py-2 rounded-lg",
+        },
+        buttonsStyling: false,
+      });
+
       if (result.isConfirmed) {
+        await updateAppointmentStatus(id, false);
+
         setAppointments((prev) =>
-          prev.map((appointment) =>
-            appointment.id === id
-              ? { ...appointment, status: "غير مؤكد" }
-              : appointment
+          prev.map((app) =>
+            app.appointmentId === id ? { ...app, status: false } : app
           )
         );
+
         Swal.fire({
           title: "تم الإلغاء",
           text: "تم إلغاء تأكيد الكشف بنجاح!",
@@ -119,8 +198,85 @@ export default function Reception() {
           buttonsStyling: false,
         });
       }
-    });
+    } catch (err) {
+      Swal.fire({
+        title: "خطأ",
+        text: "فشل في إلغاء تأكيد الحجز",
+        icon: "error",
+        customClass: {
+          popup: "bg-gray-800 text-gray-200",
+          confirmButton: "bg-indigo-600 text-white px-4 py-2 rounded-lg",
+        },
+        buttonsStyling: false,
+      });
+    }
   };
+
+  // حذف الحجز
+  const handleDeleteAppointment = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "حذف الحجز",
+        text: "هل أنت متأكد من حذف هذا الحجز؟ لا يمكن التراجع عن هذه العملية",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "نعم، احذف",
+        cancelButtonText: "تراجع",
+        customClass: {
+          popup: "bg-gray-800 text-gray-200",
+          confirmButton: "bg-red-600 text-white px-4 py-2 rounded-lg mr-2",
+          cancelButton: "bg-gray-600 text-white px-4 py-2 rounded-lg",
+        },
+        buttonsStyling: false,
+      });
+
+      if (result.isConfirmed) {
+        await deleteAppointment(id);
+
+        setAppointments((prev) =>
+          prev.filter((app) => app.appointmentId !== id)
+        );
+
+        Swal.fire({
+          title: "تم الحذف",
+          text: "تم حذف الحجز بنجاح!",
+          icon: "success",
+          customClass: {
+            popup: "bg-gray-800 text-gray-200",
+            confirmButton: "bg-indigo-600 text-white px-4 py-2 rounded-lg",
+          },
+          buttonsStyling: false,
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        title: "خطأ",
+        text: "فشل في حذف الحجز",
+        icon: "error",
+        customClass: {
+          popup: "bg-gray-800 text-gray-200",
+          confirmButton: "bg-indigo-600 text-white px-4 py-2 rounded-lg",
+        },
+        buttonsStyling: false,
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-6 flex justify-center items-center">
+        <div className="text-gray-300">جاري تحميل البيانات...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen p-6 flex justify-center items-center">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6">
@@ -145,9 +301,11 @@ export default function Reception() {
           className="w-full md:w-1/4 p-3 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-200"
         >
           <option value="">جميع العيادات</option>
-          <option value="عيادة 1">عيادة 1</option>
-          <option value="عيادة 2">عيادة 2</option>
-          <option value="عيادة 3">عيادة 3</option>
+          {Object.values(clinicDetails).map((clinic) => (
+            <option key={clinic.id} value={clinic.name}>
+              {clinic.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -167,46 +325,72 @@ export default function Reception() {
           </thead>
           <tbody>
             {filteredAppointments.length > 0 ? (
-              filteredAppointments.map((appointment) => (
-                <tr
-                  key={appointment.id}
-                  className="border-b border-gray-700 hover:bg-gray-700"
-                >
-                  <td className="p-4">{appointment.id}</td>
-                  <td className="p-4">{appointment.patientName}</td>
-                  <td className="p-4">{appointment.clinicName}</td>
-                  <td className="p-4">{appointment.doctorName}</td>
-                  <td className="p-4">{appointment.date}</td>
-                  <td className="p-4">
-                    <span
-                      className={
-                        appointment.status === "مؤكد"
-                          ? "text-green-400"
-                          : "text-yellow-400"
-                      }
-                    >
-                      {appointment.status}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    {appointment.status === "غير مؤكد" ? (
-                      <button
-                        onClick={() => confirmAppointment(appointment.id)}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
+              filteredAppointments.map((appointment) => {
+                const patient = patientDetails[appointment.patientId] || {};
+                const doctor = doctorDetails[appointment.doctorId] || {};
+                const clinic = clinicDetails[appointment.clinicId] || {};
+
+                return (
+                  <tr
+                    key={appointment.appointmentId}
+                    className="border-b border-gray-700 hover:bg-gray-700"
+                  >
+                    <td className="p-4">{appointment.appointmentId}</td>
+                    <td className="p-4">
+                      {patient.fullname || "جاري التحميل..."}
+                    </td>
+                    <td className="p-4">{clinic.name || "جاري التحميل..."}</td>
+                    <td className="p-4">
+                      {doctor.fullname || "جاري التحميل..."}
+                    </td>
+                    <td className="p-4">
+                      {dayjs(appointment.appointmentDate).format(
+                        "YYYY-MM-DD HH:mm"
+                      )}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={
+                          appointment.status
+                            ? "text-green-400"
+                            : "text-yellow-400"
+                        }
                       >
-                        تأكيد
-                      </button>
-                    ) : (
+                        {appointment.status ? "مؤكد" : "غير مؤكد"}
+                      </span>
+                    </td>
+                    <td className="p-4 flex gap-2">
+                      {!appointment.status ? (
+                        <button
+                          onClick={() =>
+                            confirmAppointment(appointment.appointmentId)
+                          }
+                          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
+                        >
+                          تأكيد
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            cancelConfirmation(appointment.appointmentId)
+                          }
+                          className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition duration-200"
+                        >
+                          إلغاء التأكيد
+                        </button>
+                      )}
                       <button
-                        onClick={() => cancelConfirmation(appointment.id)}
+                        onClick={() =>
+                          handleDeleteAppointment(appointment.appointmentId)
+                        }
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200"
                       >
-                        إلغاء التأكيد
+                        حذف
                       </button>
-                    )}
-                  </td>
-                </tr>
-              ))
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan="7" className="p-4 text-center text-gray-400">

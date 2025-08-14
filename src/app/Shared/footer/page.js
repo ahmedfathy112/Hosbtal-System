@@ -53,78 +53,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* روابط سريعة */}
-          <div>
-            <h4 className="text-xl font-semibold mb-4 border-b pb-2 border-blue-700">
-              روابط سريعة
-            </h4>
-            <ul className="space-y-2">
-              {/* home */}
-              <li>
-                <Link
-                  href="/"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  الرئيسية
-                </Link>
-              </li>
-              {/* paitent dashboard */}
-              <li>
-                <Link
-                  href="/PatiantDashboard"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  لوحة تحكم المريض
-                </Link>
-              </li>
-              {/* Appointment page */}
-              <li>
-                <Link
-                  href="/BookingPage"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  حجز الكشوفات
-                </Link>
-              </li>
-              {/* الاداري */}
-              <li>
-                <Link
-                  href="/ManagerDashoard"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  لوحة الاداري
-                </Link>
-              </li>
-              {/* الطبيب */}
-              <li>
-                <Link
-                  href="/DoctorDachboard"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  لوحة الطبيب
-                </Link>
-              </li>
-              {/* الصيدلية */}
-              <li>
-                <Link
-                  href="/Subliments"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  الصيدلية
-                </Link>
-              </li>
-              {/* تأكيد الكشوفات */}
-              <li>
-                <Link
-                  href="/AppointmentsConfirm"
-                  className="text-gray-300 hover:text-white transition"
-                >
-                  تأكيد الكشوفات
-                </Link>
-              </li>
-            </ul>
-          </div>
-
           {/* الأقسام الطبية */}
           <div>
             <h4 className="text-xl font-semibold mb-4 border-b pb-2 border-blue-700">
@@ -206,7 +134,7 @@ const Footer = () => {
               <li className="flex items-start">
                 <FaMapMarkerAlt className="mt-1 mr-2 text-blue-300" />
                 <span>
-                  شارع جامعه الدول العربيه - المتفرع من شارع جامعه الدول العربيه
+                  توجد في أي مكان وكل مكان - نحن متواجدون دائمًا لخدمتك
                 </span>
               </li>
               <li className="flex items-center">
@@ -247,7 +175,8 @@ const Footer = () => {
               سياسة الخصوصية
             </a>
             <a
-              href="#"
+              href="https://maps.app.goo.gl/PkXMAHEywo2onbWL8"
+              target="_blank"
               className="text-gray-400 hover:text-white text-sm transition"
             >
               خريطة الموقع

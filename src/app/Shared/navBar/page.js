@@ -2,18 +2,46 @@
 import React, { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useAuth, useUserFullName } from "@/app/AuthService";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { userRole, isAuthenticated, logout } = useAuth();
+  const fullName = useUserFullName();
+
+  // تحديد لوحة التحكم المناسبة بناءً على نوع المستخدم
+  const getDashboardLink = () => {
+    switch (userRole) {
+      case "Admin":
+      case "HR":
+        return "/ManagerDashoard";
+      case "Doctor":
+        return "/DoctorDachboard";
+      case "Patient":
+        return "/PatiantDashboard";
+      case "Reception":
+        return "/ReceptionNurse";
+      case "Nurse":
+        return "/ReceptionNurse";
+      default:
+        return "/";
+    }
+  };
+
+  const shouldShowDashboard =
+    isAuthenticated &&
+    ["Admin", "HR", "Doctor", "Patient", "Reception", "Nurse"].includes(
+      userRole
+    );
 
   return (
     <header className="w-full py-4 shadow-md">
       {/* for big monitor like [laptop] */}
       <nav className="container mx-auto flex justify-between items-center px-4">
         {/* Logo */}
-        <div>
+        <Link href={"/"}>
           <h2 className="font-semibold text-2xl">أهل الخير</h2>
-        </div>
+        </Link>
 
         {/* Nav Links */}
         <div className="hidden md:flex space-x-6">
@@ -40,30 +68,35 @@ const NavBar = () => {
             الرئيسية
           </Link>
 
-          {/* PatiantDashboard Link */}
+          {/* Dashboard Link - يظهر فقط للمستخدمين المسجلين دخولاً */}
+          {shouldShowDashboard && (
+            <Link
+              href={getDashboardLink()}
+              className="flex items-center cursor-pointer hover:text-[#284CFF] transition"
+            >
+              {/* Star Icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6 mr-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                />
+              </svg>
+              لوحة التحكم
+            </Link>
+          )}
+
           <Link
-            href="/DoctorDachboard"
+            href={"/AboutUs"}
             className="flex items-center cursor-pointer hover:text-[#284CFF] transition"
           >
-            {/* Star Icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6 mr-2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-              />
-            </svg>
-            لوحة التحكم
-          </Link>
-
-          <a className="flex items-center cursor-pointer hover:text-[#284CFF] transition">
             {/* Heart Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -79,24 +112,39 @@ const NavBar = () => {
                 d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
               />
             </svg>
-            قصص النجاح
-          </a>
+            تعرف علينا
+          </Link>
         </div>
 
         {/* Buttons */}
         <div className="hidden md:flex space-x-4">
-          <Link
-            href="/user/register"
-            className="py-2 px-4 text-[#284CFF] border border-[#284CFF] cursor-pointer rounded-lg block"
-          >
-            إنشاء حساب
-          </Link>
-          <Link
-            href="/user/login"
-            className="py-2 px-4 bg-[#284CFF] text-white cursor-pointer rounded-lg block"
-          >
-            تسجيل الدخول
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <span className="py-2 px-4 text-white">مرحباً، {fullName}</span>
+              <button
+                onClick={logout}
+                className="py-2 px-4 bg-red-600 text-white cursor-pointer rounded-lg block"
+              >
+                تسجيل الخروج
+              </button>
+            </>
+          ) : (
+            // if he is not auth
+            <>
+              <Link
+                href="/user/register"
+                className="py-2 px-4 text-[#284CFF] border border-[#284CFF] cursor-pointer rounded-lg block"
+              >
+                إنشاء حساب
+              </Link>
+              <Link
+                href="/user/login"
+                className="py-2 px-4 bg-[#284CFF] text-white cursor-pointer rounded-lg block"
+              >
+                تسجيل الدخول
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -121,36 +169,55 @@ const NavBar = () => {
                 الرئيسية
               </Link>
             </li>
-            {/* PatiantDashboard Link */}
+
+            {/* Dashboard Link - يظهر فقط للمستخدمين المسجلين دخولاً */}
+            {shouldShowDashboard && (
+              <li>
+                <Link
+                  href={getDashboardLink()}
+                  className="block py-2 hover:text-[#284CFF]"
+                >
+                  لوحة التحكم
+                </Link>
+              </li>
+            )}
+
             <li>
-              <Link
-                href="/PatiantDashboard"
-                className="block py-2 hover:text-[#284CFF]"
-              >
-                لوحة التحكم
+              <Link href="/AboutUs" className="block py-2 hover:text-[#284CFF]">
+                تعرف علينا
               </Link>
             </li>
-            <li>
-              <a className="block py-2 hover:text-[#284CFF]">قصص النجاح</a>
-            </li>
-            {/* Register Link */}
-            <li>
-              <Link
-                href="/user/register"
-                className="w-full py-2 text-[#284CFF] border border-[#284CFF] rounded-lg block"
-              >
-                إنشاء حساب
-              </Link>
-            </li>
-            {/* SingIn Link */}
-            <li>
-              <Link
-                href="/user/login"
-                className="w-full py-2 bg-[#284CFF] text-white rounded-lg block"
-              >
-                تسجيل الدخول
-              </Link>
-            </li>
+
+            {isAuthenticated ? (
+              <li>
+                <span className="py-2 px-4 text-white">مرحباً، {fullName}</span>
+                <button
+                  onClick={logout}
+                  className="w-full py-2 bg-red-600 text-white rounded-lg block"
+                >
+                  تسجيل الخروج
+                </button>
+              </li>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    href="/user/register"
+                    className="w-full py-2 text-[#284CFF] border border-[#284CFF] rounded-lg block"
+                  >
+                    إنشاء حساب
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/user/login"
+                    className="w-full py-2 bg-[#284CFF] text-white rounded-lg block"
+                  >
+                    تسجيل الدخول
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       )}

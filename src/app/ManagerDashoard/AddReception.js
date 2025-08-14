@@ -2,19 +2,20 @@
 import axios from "axios";
 import React, { useState } from "react";
 
-const NurseForm = () => {
-  const [username, setUserName] = useState("");
+const ReceptionForm = () => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("male");
   const [age, setAge] = useState("");
   const [email, setEmail] = useState("");
-  const [fullname, setFullName] = useState("");
-  const [phoneNumber, setPhone] = useState("");
-  const [medicalDepartment, setMedicalDepartment] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [emergencyLevel, setEmergencyLevel] = useState("begin");
+  const [status, setStatus] = useState(true);
+  const [checkInTime, setCheckInTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const token = localStorage.getItem("authToken");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -22,7 +23,7 @@ const NurseForm = () => {
 
     // التحقق من الاسم الثلاثي
     if (fullname.trim().split(" ").length < 3) {
-      setError("يجب أن يكون الأسم ثلاثي");
+      setError("يجب أن يكون الاسم ثلاثي");
       setLoading(false);
       return;
     }
@@ -38,42 +39,50 @@ const NurseForm = () => {
     // التحقق من كلمة المرور
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&])[A-Za-z\d@#$!%*?&]{8,}$/;
-
     if (!passwordRegex.test(password)) {
       setError(
-        "كلمة المرور يجب ان تكون 8 أحرف على الأقل وتحتوي على حرف كبير، حرف صغير، رقم وحرف خاص (@#$!%*?&)"
+        "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف كبير، حرف صغير، رقم وحرف خاص (@#$!%*?&)"
       );
       setLoading(false);
       return;
     }
 
     try {
+      const token = localStorage.getItem("authToken");
       const response = await axios.post(
-        "https://hospital111.runasp.net/api/Auth/register_nurse",
+        "https://hospital111.runasp.net/api/Auth/register_reception",
         {
           username,
           password,
-          fullname,
-          age,
-          gender,
-          phoneNumber,
           email,
-          medicalDepartment,
+          fullname,
+          phoneNumber,
+          age: parseInt(age),
+          gender,
+          emergencylevel: emergencyLevel,
+          status,
+          checkintime: checkInTime || new Date().toISOString(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
-      if (response.data.token) {
-        alert("تم إضافة هذا/هذه الممرض بنجاح!");
-        setEmail("");
-        setAge("");
-        setFullName("");
-        setGender("");
+      if (response.data) {
+        alert("تم إضافة موظف الاستقبال بنجاح!");
+        // إعادة تعيين الحقول
+        setUsername("");
         setPassword("");
-        setPhone("");
-        setMedicalDepartment("");
-        setUserName("");
-      } else {
-        throw new Error(response.data.message || "حدث خطأ أثناء الإضافة");
+        setEmail("");
+        setFullname("");
+        setPhoneNumber("");
+        setAge("");
+        setGender("male");
+        setEmergencyLevel("begin");
+        setStatus(true);
+        setCheckInTime("");
       }
     } catch (err) {
       setError(
@@ -89,7 +98,7 @@ const NurseForm = () => {
       onSubmit={handleSubmit}
       className="bg-gray-800 shadow-md px-8 py-5 max-md:px-3.5 w-full text-white my-4 mx-4 rounded-3xl"
     >
-      <h2 className="text-xl font-bold mb-4">إضافة ممرض جديد</h2>
+      <h2 className="text-xl font-bold mb-4">إضافة موظف استقبال جديد</h2>
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
           {error}
@@ -98,30 +107,27 @@ const NurseForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
-            الاسم
+            الاسم الثلاثي
           </label>
           <input
             type="text"
-            placeholder="ادخل اسم الممرض"
+            placeholder="ادخل الاسم الثلاثي"
             value={fullname}
-            onChange={(e) => {
-              setFullName(e.target.value);
-            }}
+            onChange={(e) => setFullname(e.target.value)}
             className="input-dark"
             required
           />
         </div>
+
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
-            أسم المستخدم
+            اسم المستخدم
           </label>
           <input
             type="text"
-            placeholder="اسم المستخدم مثل Ahmed_10"
+            placeholder="اسم المستخدم مثل magdy_15"
             value={username}
-            onChange={(e) => {
-              setUserName(e.target.value);
-            }}
+            onChange={(e) => setUsername(e.target.value)}
             className="input-dark"
             required
           />
@@ -134,14 +140,13 @@ const NurseForm = () => {
           <input
             type="email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="example@email.com"
             className="input-dark"
             required
           />
         </div>
+
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
             رقم الهاتف
@@ -149,25 +154,21 @@ const NurseForm = () => {
           <input
             type="text"
             value={phoneNumber}
-            onChange={(e) => {
-              setPhone(e.target.value);
-            }}
-            placeholder="0123456789"
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="01045655874"
             className="input-dark"
             required
           />
         </div>
+
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
-            كلمة المرور *
+            كلمة المرور
           </label>
           <input
             type="password"
-            name="Password"
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="يجب أن تحتوي على حروف وأرقام ورموز"
             className="input-dark"
             required
@@ -176,6 +177,7 @@ const NurseForm = () => {
             يجب أن تحتوي على حرف كبير، حرف صغير، رقم وحرف خاص (@$!%*?&)
           </p>
         </div>
+
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
             العمر
@@ -183,24 +185,20 @@ const NurseForm = () => {
           <input
             type="number"
             value={age}
-            onChange={(e) => {
-              setAge(e.target.value);
-            }}
-            placeholder="مثل 40.."
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="مثل 28"
             className="input-dark"
             required
           />
         </div>
+
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
-            النوع *
+            النوع
           </label>
           <select
-            name="gender"
             value={gender}
-            onChange={(e) => {
-              setGender(e.target.value);
-            }}
+            onChange={(e) => setGender(e.target.value)}
             className="input-dark"
             required
           >
@@ -208,19 +206,47 @@ const NurseForm = () => {
             <option value="female">أنثى</option>
           </select>
         </div>
+
         <div className="flex flex-col">
           <label className="mb-3 text-sm font-medium text-gray-300">
-            القسم
+            مستوى الطوارئ
           </label>
-          <input
-            type="text"
-            value={medicalDepartment}
-            onChange={(e) => {
-              setMedicalDepartment(e.target.value);
-            }}
-            placeholder="مثلاً: الطوارئ"
+          <select
+            value={emergencyLevel}
+            onChange={(e) => setEmergencyLevel(e.target.value)}
             className="input-dark"
             required
+          >
+            <option value="begin">مبتدئ</option>
+            <option value="intermediate">متوسط</option>
+            <option value="expert">خبير</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-3 text-sm font-medium text-gray-300">
+            الحالة
+          </label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value === "true")}
+            className="input-dark"
+            required
+          >
+            <option value={true}>نشط</option>
+            <option value={false}>غير نشط</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-3 text-sm font-medium text-gray-300">
+            وقت الدخول (اختياري)
+          </label>
+          <input
+            type="datetime-local"
+            value={checkInTime}
+            onChange={(e) => setCheckInTime(e.target.value)}
+            className="input-dark"
           />
         </div>
       </div>
@@ -231,11 +257,11 @@ const NurseForm = () => {
           disabled={loading}
           className="btn-dark mt-4 py-2 px-3.5 bg-[#284cff] cursor-pointer rounded-2xl mx-auto"
         >
-          {loading ? "جاري الإضافة..." : "إضافة ممرض"}
+          {loading ? "جاري الإضافة..." : "إضافة موظف استقبال"}
         </button>
       </div>
     </form>
   );
 };
 
-export default NurseForm;
+export default ReceptionForm;
