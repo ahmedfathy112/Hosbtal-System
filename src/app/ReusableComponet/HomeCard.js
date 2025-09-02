@@ -2,7 +2,7 @@ import React from "react";
 
 export const HomeCard = ({ iconPath, tittle, paragraph }) => {
   return (
-    <div className="flex flex-col rounded-xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mx-3 my-2 p-6 w-full md:w-[22%] min-w-[250px] border border-gray-100 dark:border-gray-700">
+    <div className="flex flex-col rounded-xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow cursor-pointer mx-3 my-2 p-6 w-full md:w-[22%] min-w-[250px] border border-gray-100 dark:border-gray-700 hover:-translate-y-1.5">
       <div className="w-full text-left mb-4">
         <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg inline-block">
           <svg

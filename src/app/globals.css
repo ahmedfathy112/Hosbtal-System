@@ -1,7 +1,27 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-.input-dark {
+* {
+  transition: all 0.3s ease-in-out;
+}
+.navHover {
+  position: relative;
+  padding-bottom: 8px;
+}
+.navHover::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: #284cff;
+  transition: width 0.3s ease-in-out;
+}
+.navHover:hover::before {
+  width: 100%;
+}
+body {
   @apply bg-gray-700 border border-gray-600 text-white rounded-md p-2 w-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition;
 }
 

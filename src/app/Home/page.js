@@ -32,14 +32,16 @@ const HomePage = () => {
         <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl">
           منصة بسيطة وسلسة لحجز المواعيد الطبية بكل سهولة ويسر
         </p>
-        <div className="flex gap-4">
+        {/* unuseless Button */}
+
+        {/* <div className="flex gap-4">
           <button className="py-3 px-6 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
             إبدأ الآن
           </button>
           <button className="py-3 px-6 cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium rounded-lg shadow-sm transition-all duration-200">
             تعرف أكثر
           </button>
-        </div>
+        </div> */}
       </section>
 
       {/* Our Features Section */}
@@ -100,7 +102,7 @@ const HomePage = () => {
             {steps.map((step, index) => (
               <div
                 key={index}
-                className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl hover:shadow-md transition-shadow"
+                className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl hover:shadow-md transition-shadow cursor-pointer hover:-translate-y-1.5"
               >
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
