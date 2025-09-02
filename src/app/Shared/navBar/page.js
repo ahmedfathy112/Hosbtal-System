@@ -52,7 +52,7 @@ const NavBar = () => {
   }, [isOpen]);
 
   return (
-    <header className="w-full py-4 shadow-md">
+    <header className="w-full py-4 shadow-md fixed top-0 left-0 z-50 bg-white dark:bg-gray-800">
       {/* for big monitor like [laptop] */}
       <nav className="container mx-auto flex justify-between items-center px-4">
         {/* Logo */}
