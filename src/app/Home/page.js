@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { HomeCard } from "../ReusableComponet/HomeCard";
+import BlurText from "./BlurText";
 
 const HomePage = () => {
   // Steps Section details
@@ -25,23 +26,27 @@ const HomePage = () => {
   return (
     <main className="min-h-dvh bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="w-full flex justify-center items-center flex-col text-center py-32 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800 dark:text-white">
-          نظام حجز المواعيد الطبية السهل
-        </h1>
-        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl">
-          منصة بسيطة وسلسة لحجز المواعيد الطبية بكل سهولة ويسر
-        </p>
-        {/* unuseless Button */}
-
-        {/* <div className="flex gap-4">
-          <button className="py-3 px-6 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
-            إبدأ الآن
-          </button>
-          <button className="py-3 px-6 cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-white font-medium rounded-lg shadow-sm transition-all duration-200">
-            تعرف أكثر
-          </button>
-        </div> */}
+      <section className="w-full h-[80vh] flex justify-center items-center relative flex-col text-center py-32 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 overflow-hidden">
+        {/* Video Background */}
+        <video
+          src="/WalkOnHospital.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        ></video>
+        {/* Overlay Layer */}
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
+        {/* Content */}
+        <div className="relative z-20 flex flex-col items-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800 dark:text-white">
+            نظام حجز المواعيد الطبية السهل
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl">
+            منصة بسيطة وسلسة لحجز المواعيد الطبية بكل سهولة ويسر
+          </p>
+        </div>
       </section>
 
       {/* Our Features Section */}
