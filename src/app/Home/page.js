@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { HomeCard } from "../ReusableComponet/HomeCard";
-import BlurText from "./BlurText";
 
 const HomePage = () => {
   // Steps Section details
