@@ -1,10 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🏥 Hospital Management System
 
-## Getting Started
+A fully functional Hospital Management System built with Next.js and Tailwind CSS, integrated with a complete backend for smooth data management.
 
-First, run the development server:
+🔗 Live Demo: Hospital System
 
-```bash
+🚀 Features
+
+Role-based access (Admin, HR, Patient, Receptionist, Nurse, Doctor).
+
+Admin: Full control → manage users, salaries, and reservations.
+
+HR: Focused on staff and salary management.
+
+Patient: Book appointments, manage reservations, and track history.
+
+Receptionist: Confirm reservations and view salary details.
+
+Nurse: Limited to viewing salary info.
+
+Doctor: Track patient cases and salary details.
+
+Responsive UI with clean and modern design.
+
+Seamless workflows to improve hospital operations.
+
+🛠️ Tech Stack
+
+Frontend: Next.js, Tailwind CSS
+
+Backend: Integrated (API-based)
+
+Deployment: Vercel
+
+⚡ Getting Started
+
+Clone the repository and install dependencies:
+
+git clone https://github.com/ahmedfathy112/Hospital-System.git
+cd Hospital-System
+npm install
+
+
+Run the development server:
+
 npm run dev
 # or
 yarn dev
@@ -12,25 +50,18 @@ yarn dev
 pnpm dev
 # or
 bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Open http://localhost:3000
+ to view it in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📖 Learn More
 
-## Learn More
+Next.js Documentation
 
-To learn more about Next.js, take a look at the following resources:
+Tailwind CSS Documentation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+📦 Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The easiest way to deploy this project is via Vercel:
+👉 Deploy with Vercel
